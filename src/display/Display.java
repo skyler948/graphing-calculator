@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 public class Display {
 	
@@ -23,7 +24,9 @@ public class Display {
 	private GraphingPanel panelGraph;
 	
 	private JTextField field;
-	private JButton button;
+	private JButton graphButton;
+	
+	private JButton zoomOutButton, zoomInButton;
 	
 	public Display(int width, int height) {
 		this.width = width;
@@ -42,6 +45,7 @@ public class Display {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(true);
+		frame.setFocusable(true);
 		
 		frame.setVisible(true);
 		
@@ -55,12 +59,23 @@ public class Display {
 		panelUI = new JPanel();
 		panelGraph = new GraphingPanel(this);
 		
+		zoomOutButton = new JButton("-");
+		zoomOutButton.setPreferredSize(new Dimension(30, 20));
+		zoomOutButton.setBorder(new LineBorder(Color.gray));
+		
+		zoomInButton = new JButton("+");
+		zoomInButton.setPreferredSize(new Dimension(30, 20));
+		zoomInButton.setBorder(new LineBorder(Color.gray));
+		
+		panelUI.add(zoomInButton);
+		panelUI.add(zoomOutButton);
+		
 		field = new JTextField(25);
 		panelUI.add(field);
 		
-		button = new JButton("Graph!");
-		button.setPreferredSize(new Dimension(80, 20));
-		panelUI.add(button);
+		graphButton = new JButton("Graph!");
+		graphButton.setPreferredSize(new Dimension(80, 20));
+		panelUI.add(graphButton);
 		
 		// Add display elements
 		frame.add(panel);
@@ -101,8 +116,16 @@ public class Display {
 		return field;
 	}
 	
-	public JButton getButton() {
-		return button;
+	public JButton getGraphButton() {
+		return graphButton;
+	}
+	
+	public JButton getZoomOutButton() {
+		return zoomOutButton;
+	}
+	
+	public JButton getZoomInButton() {
+		return zoomInButton;
 	}
 
 }
