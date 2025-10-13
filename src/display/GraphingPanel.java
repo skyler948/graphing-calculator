@@ -25,6 +25,9 @@ public class GraphingPanel extends JPanel {
 	private int xRatio = 7, yRatio = 5;
 	double zoom = 2;
 	
+	private int resolution = 8;
+	private double invResolution = Math.pow(resolution, -1);
+	
 	private int vertSpace = 0, horizSpace = 0;
 	
 	private double xIntercept = 0;
@@ -71,14 +74,22 @@ public class GraphingPanel extends JPanel {
 		// Draw points
 		g.setColor(Color.red);
 		int i = 0;
-		for (int x = minX - 1; x < maxX + 1; x++) {
-			g.drawLine(relOriginX + (x * horizSpace), relOriginY - ((int) (points[i] * vertSpace)), relOriginX + ((x + 1) * horizSpace), relOriginY - ((int) (points[i + 1] * vertSpace)));
+		for (double x = minX - 1; x < maxX + 1; x += invResolution) {
+			if (i < points.length - 1) {
+				if (Double.isFinite(points[i]) && Double.isFinite(points[i + 1])) {
+					g.drawLine(relOriginX + (int) (x * horizSpace), relOriginY - ((int) (points[i] * vertSpace)), relOriginX + (int) ((x + invResolution) * horizSpace), relOriginY - ((int) (points[i + 1] * vertSpace)));
+				}
+			}
 			i++;
 		}
 		
 		// Text information
 		g.setColor(Color.white);
-		g.drawString("x-intercept: " + xIntercept, 5, 15);
+		if (Double.isFinite(xIntercept)) {
+			g.drawString("x-intercept: " + xIntercept, 5, 15);
+		} else {
+			g.drawString("x-intercept: undefined", 5, 15);
+		}
 		g.drawString("zoom: " + zoom, 5, 30);
 		
 		// End
@@ -126,12 +137,14 @@ public class GraphingPanel extends JPanel {
 	}
 	
 	public void generatePoints() {
-		points = new double[domain + 3];
+		points = new double[(domain * resolution) + (resolution * 2)];
 		int i = 0;
-		// Generate points for domain
-		for (int x = minX - 1; x <= maxX + 1; x++) {
+		
+		// Generate points
+		for (double x = minX - 1; x <= maxX + 1; x += invResolution) {
 			points[i] = EquationParser.parseEquationAtX(equation, x);
 			i++;
+			if (i >= points.length) break;
 		}
 		
 		// Get X-Intercept
