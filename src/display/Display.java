@@ -1,5 +1,7 @@
 package display;
 
+import settings.Settings;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +27,7 @@ public class Display {
 	private JPanel panelUI;
 	private GraphingPanel panelGraph;
 
-    private int scale = 1;
+    private int scale;
     private Font uiFont;
 	
 	private JTextField field;
@@ -37,10 +39,15 @@ public class Display {
 
     private GraphicsDevice gd;
     private int displayWidth, displayHeight;
+
+    private Settings settings;
 	
-	public Display(int width, int height) {
+	public Display(int width, int height, Settings settings) {
 		this.width = width;
 		this.height = height;
+        this.settings = settings;
+
+        scale = settings.getScale();
 		
 		dimension = new Dimension(width, height);
 
@@ -155,6 +162,7 @@ public class Display {
             public void actionPerformed(ActionEvent e) {
                 increaseScale();
                 recreateDisplay();
+                settings.writeChangesToConfigFile();
             }
 
         });
@@ -219,6 +227,7 @@ public class Display {
     public void increaseScale() {
         scale++;
         if (scale > 5) scale = 1;
+        settings.setScale(scale);
     }
 
     public Font getUIFont() {
