@@ -44,7 +44,7 @@ public class GraphingPanel extends JPanel {
 	
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(display.getWidth(), display.getWidth());
+        return new Dimension(display.getDisplayWidth(), display.getDisplayHeight());
     }
 	
 	@Override
@@ -58,6 +58,7 @@ public class GraphingPanel extends JPanel {
 		
 		// Draw
 		g.setColor(Color.white);
+        g.setFont(display.getUIFont());
 		
 		// Y axis
 		g.drawLine(relOriginX, 0, relOriginX, getHeight());
@@ -86,11 +87,11 @@ public class GraphingPanel extends JPanel {
 		// Text information
 		g.setColor(Color.white);
 		if (Double.isFinite(xIntercept)) {
-			g.drawString("x-intercept: " + xIntercept, 5, 15);
+			g.drawString("x-intercept: " + xIntercept, 5, display.getUIFont().getSize());
 		} else {
-			g.drawString("x-intercept: undefined", 5, 15);
+			g.drawString("x-intercept: undefined", 5, display.getUIFont().getSize());
 		}
-		g.drawString("zoom: " + zoom, 5, 30);
+		g.drawString("zoom: " + zoom, 5, display.getUIFont().getSize() * 2);
 		
 		// End
 		g.dispose();
