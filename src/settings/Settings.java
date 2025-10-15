@@ -15,6 +15,7 @@ public class Settings {
 
     // Settings
     private int scale;
+    private int minX, maxX, minY, maxY;
 
     public Settings() {
         configFile = new File(PATH);
@@ -46,6 +47,10 @@ public class Settings {
 
             // Default configs
             writer.write("scale=1");
+            writer.write("\nminX=-14");
+            writer.write("\nmaxX=14");
+            writer.write("\nminY=-10");
+            writer.write("\nmaxY=10");
 
             writer.close();
         } catch (IOException e) {
@@ -63,9 +68,21 @@ public class Settings {
                 data.add(reader.nextLine());
             }
 
-            // First line should be scale
+            // Get data
             if (data.getFirst().contains("scale=")) {
                 scale = Integer.parseInt(data.getFirst().substring(6));
+            }
+            if (data.get(1).contains("minX=")) {
+                minX = Integer.parseInt(data.get(1).substring(5));
+            }
+            if (data.get(2).contains("maxX=")) {
+                maxX = Integer.parseInt(data.get(2).substring(5));
+            }
+            if (data.get(3).contains("minY=")) {
+                minY = Integer.parseInt(data.get(3).substring(5));
+            }
+            if (data.get(4).contains("maxY=")) {
+                maxY = Integer.parseInt(data.get(4).substring(5));
             }
 
             reader.close();
@@ -80,6 +97,10 @@ public class Settings {
 
             // Write all values to file
             writer.write("scale=" + scale);
+            writer.write("\nminX=" + minX);
+            writer.write("\nmaxX=" + maxX);
+            writer.write("\nminY=" + minY);
+            writer.write("\nmaxY=" + maxY);
 
             writer.close();
         } catch (IOException e) {
@@ -97,6 +118,38 @@ public class Settings {
 
     public void setScale(int scale) {
         this.scale = scale;
+    }
+
+    public int getMinX() {
+        return minX;
+    }
+
+    public void setMinX(int minX) {
+        this.minX = minX;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public void setMaxX(int maxX) {
+        this.maxX = maxX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public void setMinY(int minY) {
+        this.minY = minY;
+    }
+
+    public int getMaxY() {
+        return maxY;
+    }
+
+    public void setMaxY(int maxY) {
+        this.maxY = maxY;
     }
 
 }

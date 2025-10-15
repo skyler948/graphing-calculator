@@ -80,7 +80,7 @@ public class Display {
 		
 		// Create display elements
 		panelUI = new JPanel();
-		panelGraph = new GraphingPanel(this);
+		panelGraph = new GraphingPanel(this, settings);
 		
 		zoomOutButton = new JButton("-");
 		zoomOutButton.setPreferredSize(new Dimension(30 * scale, 20 * scale));
