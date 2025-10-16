@@ -3,6 +3,7 @@ package display;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -27,6 +28,7 @@ public class GraphingPanel extends JPanel {
 	private int range;
 
 	double zoom = 2;
+    private boolean justZoomed = false;
 	
 	private int resolution = 8;
 	private double invResolution = Math.pow(resolution, -1);
@@ -36,17 +38,36 @@ public class GraphingPanel extends JPanel {
 	private double xIntercept = 0;
 	
 	private double[] points;
+
+    private ArrayList<double[]> graphs;
 	
 	private String equation = "";
+    private ArrayList<String> equations;
+
+    private Color[] colors;
 
     private Settings settings;
 	
 	public GraphingPanel(Display display, Settings settings) {
 		this.display = display;
         this.settings = settings;
+
+        graphs = new ArrayList<>();
+        equations = new ArrayList<>();
+
         getConstraints();
 		
 		setBackground(Color.black);
+
+        // Set colors for graphs
+        colors = new Color[6];
+
+        colors[0] = Color.red;
+        colors[1] = Color.green;
+        colors[2] = Color.cyan;
+        colors[3] = Color.yellow;
+        colors[4] = Color.pink;
+        colors[5] = Color.white;
 	}
 	
     @Override
@@ -61,7 +82,13 @@ public class GraphingPanel extends JPanel {
 		// Set variables
 		setDomainAndRange();
 		setRelativeOrigins();
-		generatePoints();
+        if (!equation.isBlank() && !justZoomed) {
+            generatePoints(false, equation);
+        }
+        if (justZoomed) {
+            generatePointsFromList();
+        }
+        justZoomed = false;
 		
 		// Draw
 		g.setColor(Color.white);
@@ -88,16 +115,24 @@ public class GraphingPanel extends JPanel {
         }
 		
 		// Draw points
-		g.setColor(Color.red);
-		int i = 0;
-		for (double x = minX - 1; x < maxX + 1; x += invResolution) {
-			if (i < points.length - 1) {
-				if (Double.isFinite(points[i]) && Double.isFinite(points[i + 1])) {
-					g.drawLine(relOriginX + (int) (x * horizSpace), relOriginY - ((int) (points[i] * vertSpace)), relOriginX + (int) ((x + invResolution) * horizSpace), relOriginY - ((int) (points[i + 1] * vertSpace)));
-				}
-			}
-			i++;
-		}
+		int colorIndex = 0;
+        double x = 0.0;
+        for (double[] graph : graphs) {
+            // Set color from array
+            g.setColor(colors[colorIndex % 6]);
+
+            // Draw graph
+            for (int i = 0; i < graph.length - 1; i++) {
+                if (Double.isFinite(graph[i]) && Double.isFinite(graph[i + 1])) {
+                    g.drawLine((int) ((x * horizSpace) - horizSpace), relOriginY - (int) (graph[i] * vertSpace), (int) (((x + invResolution) * horizSpace) - horizSpace), relOriginY - (int) (graph[i + 1] * vertSpace));
+                }
+                x += invResolution;
+            }
+
+            // Increment counters
+            x = 0;
+            colorIndex++;
+        }
 		
 		// Text information
 		g.setColor(Color.white);
@@ -130,15 +165,26 @@ public class GraphingPanel extends JPanel {
 	}
 	
 	public void doubleXYRange() {
+        // Clear graphs
+        graphs.clear();
+
+        // Change perspectives
 		minX -= minXZoom;
 		maxX += maxXZoom;
 		minY -= minYZoom;
 		maxY += maxYZoom;
 		zoom++;
 		setDomainAndRange();
+
+        // Set zoomed variable to correctly redraw graphs
+        justZoomed = true;
 	}
 	
 	public void halfXYRange() {
+        // Clear graphs
+        graphs.clear();
+
+        // Change perspective
         zoom--;
         if (zoom != 0) {
             minX += minXZoom;
@@ -149,6 +195,9 @@ public class GraphingPanel extends JPanel {
             zoom = 1;
         }
 		setDomainAndRange();
+
+        // Set zoomed variable to correctly redraw graphs
+        justZoomed = true;
 	}
 	
 	private void setRelativeOrigins() {
@@ -169,7 +218,7 @@ public class GraphingPanel extends JPanel {
         relOriginY += yOffs;
 	}
 	
-	public void generatePoints() {
+	public void generatePoints(boolean generateFromList, String equation) {
 		points = new double[(domain * resolution) + (resolution * 2)];
 		int i = 0;
 		
@@ -182,7 +231,19 @@ public class GraphingPanel extends JPanel {
 		
 		// Get X-Intercept
 		xIntercept = EquationParser.parseEquationAtX(equation, 0);
+
+        // Add points to list
+        graphs.add(points);
+
+        // Add equation to list
+        if (!generateFromList) equations.add(equation);
 	}
+
+    public void generatePointsFromList() {
+        for (String eq : equations) {
+            generatePoints(true, eq);
+        }
+    }
 	
 	public int getRelOriginX() {
 		return relOriginX;
@@ -199,5 +260,13 @@ public class GraphingPanel extends JPanel {
 	public void setEquation(String equation) {
 		this.equation = equation;
 	}
+
+    public void removeRecentGraph() {
+        if (!graphs.isEmpty()) {
+            graphs.removeLast();
+            equations.removeLast();
+            equation = "";
+        }
+    }
 
 }

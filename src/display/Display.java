@@ -5,7 +5,6 @@ import settings.Settings;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,6 +19,8 @@ public class Display {
 	private final String TITLE = "Graphing Calculator";
 	
 	private Dimension dimension;
+
+    private Dimension defaultButtonSize;
 	
 	private JFrame frame;
 	private JPanel panel;
@@ -32,6 +33,8 @@ public class Display {
 	
 	private JTextField field;
 	private JButton graphButton;
+
+    private JButton graphRemoveButton;
 	
 	private JButton zoomOutButton, zoomInButton;
 
@@ -60,6 +63,7 @@ public class Display {
 	
 	private void createDisplay() {
         uiFont = new Font("Arial", Font.PLAIN, 12 * scale);
+        defaultButtonSize = new Dimension(30 * scale, 20 * scale);
 
 		// Display parameters
 		frame = new JFrame(TITLE);
@@ -83,17 +87,24 @@ public class Display {
 		panelGraph = new GraphingPanel(this, settings);
 		
 		zoomOutButton = new JButton("-");
-		zoomOutButton.setPreferredSize(new Dimension(30 * scale, 20 * scale));
+		zoomOutButton.setPreferredSize(defaultButtonSize);
 		zoomOutButton.setBorder(new LineBorder(Color.gray));
         zoomOutButton.setFont(uiFont);
 		
 		zoomInButton = new JButton("+");
-		zoomInButton.setPreferredSize(new Dimension(30 * scale, 20 * scale));
+		zoomInButton.setPreferredSize(defaultButtonSize);
 		zoomInButton.setBorder(new LineBorder(Color.gray));
         zoomInButton.setFont(uiFont);
+
+        graphRemoveButton = new JButton("✖");
+        graphRemoveButton.setPreferredSize(defaultButtonSize);
+        graphRemoveButton.setBorder(new LineBorder(Color.gray));
+        graphRemoveButton.setFont(uiFont);
 		
 		panelUI.add(zoomInButton);
 		panelUI.add(zoomOutButton);
+
+        panelUI.add(graphRemoveButton);
 		
 		field = new JTextField(25);
         field.setPreferredSize(new Dimension(300 * scale, 20 * scale));
@@ -106,7 +117,7 @@ public class Display {
 		panelUI.add(graphButton);
 
         scaleButton = new JButton("⚙");
-        scaleButton.setPreferredSize(new Dimension(30 * scale, 20 * scale));
+        scaleButton.setPreferredSize(defaultButtonSize);
         scaleButton.setBorder(new LineBorder(Color.gray));
         scaleButton.setFont(uiFont);
         panelUI.add(scaleButton);
@@ -151,6 +162,16 @@ public class Display {
             // Zoom out
             public void actionPerformed(ActionEvent a) {
                 panelGraph.doubleXYRange();
+                panelGraph.repaint();
+            }
+
+        });
+
+        graphRemoveButton.addActionListener(new ActionListener() {
+
+            // Remove most recent graph
+            public void actionPerformed(ActionEvent e) {
+                panelGraph.removeRecentGraph();
                 panelGraph.repaint();
             }
 
