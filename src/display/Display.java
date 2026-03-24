@@ -1,6 +1,7 @@
 package display;
 
 import settings.Settings;
+import settings.SettingsWindow;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,30 +39,34 @@ public class Display {
 	
 	private JButton zoomOutButton, zoomInButton;
 
-    private JButton scaleButton;
+    private JButton settingsButton;
 
     private GraphicsDevice gd;
     private int displayWidth, displayHeight;
 
     private Settings settings;
+
+    private SettingsWindow settingsWindow;
 	
 	public Display(int width, int height, Settings settings) {
 		this.width = width;
 		this.height = height;
         this.settings = settings;
-
-        scale = settings.getScale();
 		
 		dimension = new Dimension(width, height);
 
         gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         displayWidth = gd.getDisplayMode().getWidth();
         displayHeight = gd.getDisplayMode().getHeight();
+
+        settingsWindow = new SettingsWindow(300, 400, settings, this);
 		
 		createDisplay();
 	}
 	
 	private void createDisplay() {
+        scale = settings.getScale();
+
         uiFont = new Font("Arial", Font.PLAIN, 12 * scale);
         defaultButtonSize = new Dimension(30 * scale, 20 * scale);
 
@@ -116,11 +121,11 @@ public class Display {
         graphButton.setFont(uiFont);
 		panelUI.add(graphButton);
 
-        scaleButton = new JButton("⚙");
-        scaleButton.setPreferredSize(defaultButtonSize);
-        scaleButton.setBorder(new LineBorder(Color.gray));
-        scaleButton.setFont(uiFont);
-        panelUI.add(scaleButton);
+        settingsButton = new JButton("⚙");
+        settingsButton.setPreferredSize(defaultButtonSize);
+        settingsButton.setBorder(new LineBorder(Color.gray));
+        settingsButton.setFont(uiFont);
+        panelUI.add(settingsButton);
 		
 		// Add display elements
 		frame.add(panel);
@@ -177,13 +182,17 @@ public class Display {
 
         });
 
-        scaleButton.addActionListener(new ActionListener() {
+        settingsButton.addActionListener(new ActionListener() {
 
             // Change scale
             public void actionPerformed(ActionEvent e) {
+                /*
                 increaseScale();
                 recreateDisplay();
-                settings.writeChangesToConfigFile();
+                settings.writeChangesToConfigFile();*/
+                if (!settingsWindow.isDisplayOpen()) {
+                    settingsWindow.createDisplay();
+                }
             }
 
         });
@@ -267,8 +276,8 @@ public class Display {
         return displayHeight;
     }
 
-    public JButton getScaleButton() {
-        return scaleButton;
+    public JButton getSettingsButton() {
+        return settingsButton;
     }
 
 }
