@@ -3,6 +3,7 @@ package settings;
 import display.Display;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,6 +82,7 @@ public class SettingsWindow {
             settingsPanels[i].add(settingsFields[i]);
 
             settingsFields[i].setColumns(10);
+            ((AbstractDocument) settingsFields[i].getDocument()).setDocumentFilter(new IntegerDocumentFilter());
 
             mainPanel.add(settingsPanels[i]);
         }

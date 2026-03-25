@@ -118,6 +118,9 @@ public class Settings {
 
     public void setScale(int scale) {
         this.scale = scale;
+        if (this.scale < 1) {
+            this.scale = 1;
+        }
     }
 
     public int getMinX() {
