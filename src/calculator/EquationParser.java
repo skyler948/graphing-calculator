@@ -1,7 +1,11 @@
 package calculator;
 
+import java.util.Locale;
+
 public class EquationParser {
-	
+
+    // This is so messy lol
+
 	public static double parseEquationAtX(String equation, double value) {
 		if (!equation.isEmpty()) {
 			// Split equation
@@ -27,20 +31,36 @@ public class EquationParser {
 					// Constant
 					constant = true;
 					
-					// Check if theres a power
+					// Check if there's a power
 					if (powPos != -1) {
-						coefficient = Double.parseDouble(data[i].substring(0, powPos));
+                        try {
+                            coefficient = Double.parseDouble(data[i].substring(0, powPos));
+                        } catch (NumberFormatException e) {
+                            coefficient = getSpecialConstant(data[i].substring(0, powPos));
+                        }
 					} else {
-						coefficient = Double.parseDouble(data[i]);
+                        try {
+                            coefficient = Double.parseDouble(data[i]);
+                        } catch (NumberFormatException e) {
+                            coefficient = getSpecialConstant(data[i]);
+                        }
 					}
 				} else {
 					// Coefficient
-					coefficient = Double.parseDouble(data[i].substring(0, xPos));
+                    try {
+                        coefficient = Double.parseDouble(data[i].substring(0, xPos));
+                    } catch (NumberFormatException e) {
+                        coefficient = getSpecialConstant(data[i].substring(0, xPos));
+                    }
 				}
 				
 				// Check if the ^ position is not -1. If so, there is no power
 				if (powPos != -1) {
-					exponent = Double.parseDouble(data[i].substring(powPos + 1));
+                    try {
+                        exponent = Double.parseDouble(data[i].substring(powPos + 1));
+                    } catch (NumberFormatException e) {
+                        exponent = getSpecialConstant(data[i].substring(powPos + 1));
+                    }
 				} else {
 					exponent = 1.0;
 				}
@@ -57,20 +77,32 @@ public class EquationParser {
 			
 			double result = part[0];
 			j = 0;
-			
-			for (int i = 0; i < data.length; i++) {
-				if (data[i].equals("+")) {
-					result = result + part[j + 1];
-					j++;
-				} else if (data[i].equals("-")) {
-					result = result - part[j + 1];
-					j++;
-				}
-			}
+
+            for (String d : data) {
+                if (d.equals("+")) {
+                    result = result + part[j + 1];
+                    j++;
+                } else if (d.equals("-")) {
+                    result = result - part[j + 1];
+                    j++;
+                }
+            }
 			
 			return result;
 		}
 		return 0.0;
 	}
+
+    private static double getSpecialConstant(String constant) {
+        String formatted = constant.toLowerCase(Locale.ROOT).trim();
+
+        return switch (formatted) {
+            case "e" -> Math.E;
+            case "pi" -> Math.PI;
+            case "tau" -> Math.TAU;
+            case "phi" -> 1.61803398874989484820;
+            default -> 1.0;
+        };
+    }
 
 }
