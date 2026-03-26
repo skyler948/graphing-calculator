@@ -186,12 +186,9 @@ public class Display {
 
             // Change scale
             public void actionPerformed(ActionEvent e) {
-                /*
-                increaseScale();
-                recreateDisplay();
-                settings.writeChangesToConfigFile();*/
                 if (!settingsWindow.isDisplayOpen()) {
                     settingsWindow.createDisplay();
+                    settingsWindow.updateFields();
                 }
             }
 

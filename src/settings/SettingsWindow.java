@@ -87,17 +87,19 @@ public class SettingsWindow {
             mainPanel.add(settingsPanels[i]);
         }
 
-        settingsFields[0].setText("" + settings.getScale());
-        settingsFields[1].setText("" + settings.getMinX());
-        settingsFields[2].setText("" + settings.getMaxX());
-        settingsFields[3].setText("" + settings.getMinY());
-        settingsFields[4].setText("" + settings.getMaxY());
-
         saveButton = new JButton("Save");
 
         mainPanel.add(saveButton);
 
         createActionListeners();
+    }
+
+    public void updateFields() {
+        settingsFields[0].setText("" + settings.getScale());
+        settingsFields[1].setText("" + display.getPanelGraph().getMinX());
+        settingsFields[2].setText("" + display.getPanelGraph().getMaxX());
+        settingsFields[3].setText("" + display.getPanelGraph().getMinY());
+        settingsFields[4].setText("" + display.getPanelGraph().getMaxY());
     }
 
     private void createActionListeners() {

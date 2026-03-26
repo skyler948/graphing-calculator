@@ -21,13 +21,10 @@ public class GraphingPanel extends JPanel {
 	private int minX, maxX;
 	private int minY, maxY;
 
-    private int minXZoom, maxXZoom;
-    private int minYZoom, maxYZoom;
-
 	private int domain;
 	private int range;
 
-	double zoom = 2;
+    private final int ZOOM_CONSTANT = 2;
     private boolean justZoomed = false;
 	
 	private int resolution = 8;
@@ -141,7 +138,6 @@ public class GraphingPanel extends JPanel {
 		} else {
 			g.drawString("x-intercept: undefined", 5, display.getUIFont().getSize());
 		}
-		g.drawString("zoom: " + zoom, 5, display.getUIFont().getSize() * 2);
 		
 		// End
 		g.dispose();
@@ -152,11 +148,6 @@ public class GraphingPanel extends JPanel {
         maxX = settings.getMaxX();
         minY = settings.getMinY();
         maxY = settings.getMaxY();
-
-        minXZoom = Math.abs(minX) / 2;
-        maxXZoom = Math.abs(maxX) / 2;
-        minYZoom = Math.abs(minY) / 2;
-        maxYZoom = Math.abs(maxY) / 2;
     }
 	
 	private void setDomainAndRange() {
@@ -169,11 +160,10 @@ public class GraphingPanel extends JPanel {
         graphs.clear();
 
         // Change perspectives
-		minX -= minXZoom;
-		maxX += maxXZoom;
-		minY -= minYZoom;
-		maxY += maxYZoom;
-		zoom++;
+		minX -= ZOOM_CONSTANT;
+		maxX += ZOOM_CONSTANT;
+		minY -= ZOOM_CONSTANT;
+		maxY += ZOOM_CONSTANT;
 		setDomainAndRange();
 
         // Set zoomed variable to correctly redraw graphs
@@ -185,20 +175,42 @@ public class GraphingPanel extends JPanel {
         graphs.clear();
 
         // Change perspective
-        zoom--;
-        if (zoom != 0) {
-            minX += minXZoom;
-            maxX -= maxXZoom;
-            minY += minYZoom;
-            maxY -= maxYZoom;
-        } else {
-            zoom = 1;
-        }
+        minX += ZOOM_CONSTANT;
+        maxX -= ZOOM_CONSTANT;
+        minY += ZOOM_CONSTANT;
+        maxY -= ZOOM_CONSTANT;
+
+        checkValueValidity();
+
 		setDomainAndRange();
 
         // Set zoomed variable to correctly redraw graphs
         justZoomed = true;
 	}
+
+    private void checkValueValidity() {
+        if (minX == 0 && maxX == 0) {
+            minX = -ZOOM_CONSTANT;
+            maxX = ZOOM_CONSTANT;
+        }
+
+        if (minY == 0 && maxY == 0) {
+            minY = -ZOOM_CONSTANT;
+            maxY = ZOOM_CONSTANT;
+        }
+
+        if (minX > maxX) {
+            int tX = maxX;
+            maxX = minX;
+            minX = tX;
+        }
+
+        if (minY > maxY) {
+            int tY = maxY;
+            maxY = minY;
+            minY = tY;
+        }
+    }
 	
 	private void setRelativeOrigins() {
 		// Origin points relative to the panel
@@ -267,6 +279,22 @@ public class GraphingPanel extends JPanel {
             equations.removeLast();
             equation = "";
         }
+    }
+
+    public int getMinX() {
+        return minX;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getMaxY() {
+        return maxY;
     }
 
 }

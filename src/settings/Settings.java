@@ -47,8 +47,8 @@ public class Settings {
 
             // Default configs
             writer.write("scale=1");
-            writer.write("\nminX=-14");
-            writer.write("\nmaxX=14");
+            writer.write("\nminX=-10");
+            writer.write("\nmaxX=10");
             writer.write("\nminY=-10");
             writer.write("\nmaxY=10");
 
