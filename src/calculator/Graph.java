@@ -1,6 +1,5 @@
 package calculator;
 
-import display.Display;
 import display.GraphingPanel;
 
 import java.awt.*;
@@ -53,6 +52,14 @@ public class Graph {
 
     public double getXIntercept() {
         return getY(0);
+    }
+
+    public String getEquation() {
+        return equation;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
 }

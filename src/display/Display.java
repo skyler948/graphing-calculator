@@ -1,6 +1,7 @@
 package display;
 
 import calculator.Graph;
+import calculator.GraphWindow;
 import settings.Settings;
 import settings.SettingsWindow;
 
@@ -36,7 +37,7 @@ public class Display {
 	private JTextField field;
 	private JButton graphButton;
 
-    private JButton graphRemoveButton;
+    private JButton graphViewButton;
 	
 	private JButton zoomOutButton, zoomInButton;
 
@@ -48,6 +49,7 @@ public class Display {
     private Settings settings;
 
     private SettingsWindow settingsWindow;
+    private GraphWindow graphWindow;
 
     private Color[] colors;
 	
@@ -63,6 +65,7 @@ public class Display {
         displayHeight = gd.getDisplayMode().getHeight();
 
         settingsWindow = new SettingsWindow(300, 400, settings, this);
+        graphWindow = new GraphWindow(800, 800, this);
 		
 		createDisplay();
 	}
@@ -104,15 +107,15 @@ public class Display {
 		zoomInButton.setBorder(new LineBorder(Color.gray));
         zoomInButton.setFont(uiFont);
 
-        graphRemoveButton = new JButton("✖");
-        graphRemoveButton.setPreferredSize(defaultButtonSize);
-        graphRemoveButton.setBorder(new LineBorder(Color.gray));
-        graphRemoveButton.setFont(uiFont);
+        graphViewButton = new JButton("◉");
+        graphViewButton.setPreferredSize(defaultButtonSize);
+        graphViewButton.setBorder(new LineBorder(Color.gray));
+        graphViewButton.setFont(uiFont);
 		
 		panelUI.add(zoomInButton);
 		panelUI.add(zoomOutButton);
 
-        panelUI.add(graphRemoveButton);
+        panelUI.add(graphViewButton);
 		
 		field = new JTextField(25);
         field.setPreferredSize(new Dimension(300 * scale, 20 * scale));
@@ -159,7 +162,7 @@ public class Display {
 
             // On click of button
             public void actionPerformed(ActionEvent a) {
-                panelGraph.addGraph(new Graph(field.getText(), colors[panelGraph.getGraphCount() % colors.length], panelGraph));
+                panelGraph.addGraph(new Graph(field.getText(), colors[panelGraph.getGraphs().size() % colors.length], panelGraph));
                 panelGraph.repaint();
             }
 
@@ -186,12 +189,13 @@ public class Display {
 
         });
 
-        graphRemoveButton.addActionListener(new ActionListener() {
+        graphViewButton.addActionListener(new ActionListener() {
 
-            // Remove most recent graph
+            // View all graphs
             public void actionPerformed(ActionEvent e) {
-                panelGraph.removeRecentGraph();
-                panelGraph.repaint();
+                if (!graphWindow.isDisplayOpen()) {
+                    graphWindow.createDisplay();
+                }
             }
 
         });

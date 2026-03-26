@@ -95,14 +95,6 @@ public class GraphingPanel extends JPanel {
             graph.render(g);
         }
 		
-		// Text information
-		g.setColor(Color.white);
-		if (Double.isFinite(xIntercept)) {
-			g.drawString("x-intercept: " + xIntercept, 5, display.getUIFont().getSize());
-		} else {
-			g.drawString("x-intercept: undefined", 5, display.getUIFont().getSize());
-		}
-		
 		// End
 		g.dispose();
 	}
@@ -248,8 +240,12 @@ public class GraphingPanel extends JPanel {
         graphs.add(graph);
     }
 
-    public int getGraphCount() {
-        return graphs.size();
+    public void removeGraph(Graph graph) {
+        graphs.remove(graph);
+    }
+
+    public ArrayList<Graph> getGraphs() {
+        return graphs;
     }
 
 }
