@@ -1,5 +1,6 @@
 package display;
 
+import calculator.Graph;
 import settings.Settings;
 import settings.SettingsWindow;
 
@@ -47,6 +48,8 @@ public class Display {
     private Settings settings;
 
     private SettingsWindow settingsWindow;
+
+    private Color[] colors;
 	
 	public Display(int width, int height, Settings settings) {
 		this.width = width;
@@ -135,6 +138,17 @@ public class Display {
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
+        colors = new Color[]{
+                Color.red,
+                Color.green,
+                Color.blue,
+                Color.yellow,
+                Color.orange,
+                Color.pink,
+                Color.cyan,
+                Color.white
+        };
+
         // Add action listeners
         createActionListeners();
 	}
@@ -145,7 +159,7 @@ public class Display {
 
             // On click of button
             public void actionPerformed(ActionEvent a) {
-                panelGraph.setEquation(field.getText());
+                panelGraph.addGraph(new Graph(field.getText(), colors[panelGraph.getGraphCount() % colors.length], panelGraph));
                 panelGraph.repaint();
             }
 
