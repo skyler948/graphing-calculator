@@ -50,7 +50,7 @@ public class Graph {
         return EquationParser.parseEquationAtX(equation, x);
     }
 
-    public double getXIntercept() {
+    public double getYIntercept() {
         return getY(0);
     }
 

@@ -6,7 +6,7 @@ import javax.swing.text.DocumentFilter;
 
 public class IntegerDocumentFilter extends DocumentFilter {
 
-    protected static char[] ALLOWED_CHARACTERS = {'-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    public char[] characterList = {'-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     @Override
     public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) {
@@ -14,7 +14,7 @@ public class IntegerDocumentFilter extends DocumentFilter {
 
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            for (Character allowed : ALLOWED_CHARACTERS) {
+            for (Character allowed : characterList) {
                 if (ch == allowed) {
                     buffer.append(ch);
                     break;
