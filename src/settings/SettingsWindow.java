@@ -23,6 +23,7 @@ public class SettingsWindow {
     private Panel[] settingsPanels;
     private JLabel[] settingsLabels;
     private JTextField[] settingsFields;
+    private JButton axisButton;
 
     private JButton saveButton;
 
@@ -58,6 +59,7 @@ public class SettingsWindow {
                 new Panel(),
                 new Panel(),
                 new Panel(),
+                new Panel(),
                 new Panel()
         };
 
@@ -66,7 +68,8 @@ public class SettingsWindow {
                 new JLabel("minX"),
                 new JLabel("maxX"),
                 new JLabel("minY"),
-                new JLabel("maxY")
+                new JLabel("maxY"),
+                new JLabel("axisTicks")
         };
 
         settingsFields = new JTextField[]{
@@ -77,8 +80,13 @@ public class SettingsWindow {
                 new JTextField()
         };
 
+        axisButton = new JButton(settings.isAxisTicksEnabled(true));
+
         for (int i = 0; i < settingsPanels.length; i++) {
             settingsPanels[i].add(settingsLabels[i]);
+
+            if (i == settingsPanels.length - 1) break;
+
             settingsPanels[i].add(settingsFields[i]);
 
             settingsFields[i].setColumns(10);
@@ -86,6 +94,9 @@ public class SettingsWindow {
 
             mainPanel.add(settingsPanels[i]);
         }
+
+        settingsPanels[settingsPanels.length - 1].add(axisButton);
+        mainPanel.add(settingsPanels[settingsPanels.length - 1]);
 
         saveButton = new JButton("Save");
 
@@ -100,6 +111,7 @@ public class SettingsWindow {
         settingsFields[2].setText("" + display.getPanelGraph().getMaxX());
         settingsFields[3].setText("" + display.getPanelGraph().getMinY());
         settingsFields[4].setText("" + display.getPanelGraph().getMaxY());
+        axisButton.setText(settings.isAxisTicksEnabled(true));
     }
 
     private void createActionListeners() {
@@ -116,6 +128,16 @@ public class SettingsWindow {
                 display.recreateDisplay();
 
                 settings.writeChangesToConfigFile();
+            }
+
+        });
+
+        axisButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settings.setShowAxisTicks(!settings.isAxisTicksEnabled());
+                axisButton.setText(settings.isAxisTicksEnabled(true));
             }
 
         });

@@ -71,33 +71,48 @@ public class GraphingPanel extends JPanel {
         g.setFont(display.getUIFont());
 		
 		// Y axis
-        if (minX < 0 || maxX > 0) {
-            g.drawLine(relOriginX, 0, relOriginX, getHeight());
-            for (int y = 0; y <= range; y++) {
-                if (y != range) {
-                    g.drawLine(relOriginX - 5, (int) (y * vertSpace), relOriginX + 5, (int) (y * vertSpace));
-                } else {
-                    g.drawLine(relOriginX - 5, (int) (y * vertSpace) - 1, relOriginX + 5, (int) (y * vertSpace) - 1);
-                }
-            }
-        }
+        drawYAxis(g, settings.isAxisTicksEnabled());
 		
 		// X axis
-        if (minY < 0 || maxY > 0) {
-            g.drawLine(0, relOriginY, getWidth(), relOriginY);
-            for (int x = 0; x <= domain; x++) {
-                g.drawLine((int) (x * horizSpace), relOriginY - 5, (int) (x * horizSpace), relOriginY + 5);
-            }
-        }
+        drawXAxis(g, settings.isAxisTicksEnabled());
 		
 		// Draw points
         for (Graph graph : graphs) {
             graph.render(g);
         }
+
+        // UI stuff
+        g.setColor(Color.white);
+        g.drawString("x: (" + minX + " - " + maxX + ")", 5, display.getUIFont().getSize());
+        g.drawString("y: (" + minY + " - " + maxY + ")", 5, display.getUIFont().getSize() * 2);
 		
 		// End
 		g.dispose();
 	}
+
+    private void drawXAxis(Graphics g, boolean ticks) {
+        if (minY > 0 || maxY < 0) return;
+        g.drawLine(0, relOriginY, getWidth(), relOriginY);
+
+        if (!ticks) return;
+        for (int x = 0; x <= domain; x++) {
+            g.drawLine((int) (x * horizSpace), relOriginY - 5, (int) (x * horizSpace), relOriginY + 5);
+        }
+    }
+
+    private void drawYAxis(Graphics g, boolean ticks) {
+        if (minX > 0 || maxX < 0) return;
+        g.drawLine(relOriginX, 0, relOriginX, getHeight());
+
+        if (!ticks) return;
+        for (int y = 0; y <= range; y++) {
+            if (y != range) {
+                g.drawLine(relOriginX - 5, (int) (y * vertSpace), relOriginX + 5, (int) (y * vertSpace));
+            } else {
+                g.drawLine(relOriginX - 5, (int) (y * vertSpace) - 1, relOriginX + 5, (int) (y * vertSpace) - 1);
+            }
+        }
+    }
 
     public void getConstraints() {
         minX = settings.getMinX();

@@ -16,6 +16,7 @@ public class Settings {
     // Settings
     private int scale;
     private int minX, maxX, minY, maxY;
+    private boolean showAxisTicks;
 
     public Settings() {
         configFile = new File(PATH);
@@ -51,6 +52,7 @@ public class Settings {
             writer.write("\nmaxX=10");
             writer.write("\nminY=-10");
             writer.write("\nmaxY=10");
+            writer.write("\naxisTicks=true");
 
             writer.close();
         } catch (IOException e) {
@@ -84,6 +86,9 @@ public class Settings {
             if (data.get(4).contains("maxY=")) {
                 maxY = Integer.parseInt(data.get(4).substring(5));
             }
+            if (data.get(5).contains("axisTicks=")) {
+                showAxisTicks = Boolean.parseBoolean(data.get(5).substring(10));
+            }
 
             reader.close();
         } catch (FileNotFoundException e) {
@@ -101,6 +106,7 @@ public class Settings {
             writer.write("\nmaxX=" + maxX);
             writer.write("\nminY=" + minY);
             writer.write("\nmaxY=" + maxY);
+            writer.write("\naxisTicks=" + showAxisTicks);
 
             writer.close();
         } catch (IOException e) {
@@ -153,6 +159,18 @@ public class Settings {
 
     public void setMaxY(int maxY) {
         this.maxY = maxY;
+    }
+
+    public boolean isAxisTicksEnabled() {
+        return showAxisTicks;
+    }
+
+    public String isAxisTicksEnabled(boolean String) {
+        return isAxisTicksEnabled() ? "On" : "Off";
+    }
+
+    public void setShowAxisTicks(boolean showAxisTicks) {
+        this.showAxisTicks = showAxisTicks;
     }
 
 }
