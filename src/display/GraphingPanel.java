@@ -263,4 +263,8 @@ public class GraphingPanel extends JPanel {
         return graphs;
     }
 
+    public Display getDisplay() {
+        return display;
+    }
+
 }
